@@ -28,14 +28,10 @@ def create_project_file(file_name):
 create_output_directory()
 create_project_file(url)
 
-
-
-"""
 with open(project_file, "r+") as project_file:
     lines = project_file.readlines()
     links = crawl_site_for_links(lines[0])
     for each in links:
         project_file.write(each + "\n")
-"""
 
 
