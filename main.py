@@ -1,68 +1,41 @@
 import os, sys, requests
 from bs4 import BeautifulSoup, SoupStrainer
+from random import randint
 from urlparse import urljoin
-from helpers import *
+from general_helpers import *
+from link_extraction_helpers import *
 
-# starting page
+# initial page to crawl
 if len(sys.argv) == 2:
     url = sys.argv[1]
     base_url = url
+    project_file = os.getcwd() + "/output_files/" + get_central_domain(url)
 else:
-    # default
-    url = "https://thenewboston.com"
+    url = "https://pythonprogramming.net" # default
     base_url = url
+    project_file = os.getcwd() + "/output_files/" + get_central_domain(url)
 
-def get_html(url):
-    response = requests.get(url)
-    html = response.content
-    return html
+def create_output_directory():
+    if not os.path.exists(os.getcwd() + "/output_files"):
+        os.mkdir("output_files")
 
-def extract_all_link_tags(html):
-    soup_object = BeautifulSoup(html, "html.parser")
-    a_tags = soup_object.find_all("a")
-    return a_tags
+def create_project_file(file_name):
+    if os.path.exists(project_file):
+        os.remove(project_file)
+    with open(project_file, 'w') as f:
+        f.write(file_name)
 
-def extract_hrefs(a_tags):
-    links = []
-    for tag in a_tags:
-        try:
-            links.append(tag["href"])
-        except:
-            print('failure to add one.')
-    return links
+create_output_directory()
+create_project_file(url)
 
-def extend_relative_paths(links):
-    full_paths = []
+
+
+"""
+with open(project_file, "r+") as project_file:
+    lines = project_file.readlines()
+    links = crawl_site_for_links(lines[0])
     for each in links:
-        full_path = urljoin(base_url, each)
-        full_paths.append(full_path)
-    return full_paths
-
-def remove_external_links(links):
-    internal_paths = []
-    for link in links:
-        if get_central_domain(link) == get_central_domain(base_url):
-            internal_paths.append(link)
-    return internal_paths
-
-def filter_for_uniqueness(links):
-    unique_links = set()
-    for link in links:
-        unique_links.add(link)
-    return unique_links
-
-output = get_html(url)
-output = extract_all_link_tags(output)
-output = extract_hrefs(output)
-output = extend_relative_paths(output)
-output = remove_external_links(output)
-output = filter_for_uniqueness(output)
-for each in output:
-    print(each)
-
+        project_file.write(each + "\n")
 """
-- git etc
-- url
-- trying safely
-- trying output
-"""
+
+
